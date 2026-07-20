@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SivaMurugan — Python Developer &amp; Badminton Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --court:#0B4F3C;
+    --court-dark:#08361F;
+    --navy:#0B132B;
+    --navy-2:#121B3C;
+    --shuttle:#F4F4F9;
+    --lime:#C6F135;
+    --py-blue:#3E8FE0;
+    --py-yellow:#FFD43B;
+    --pink:#FF5C8A;
+    --text:#EDEFF7;
+    --text-dim:#9AA3C2;
+    --radius:14px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--navy);
+    color:var(--text);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(62,143,224,0.15), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(198,241,53,0.10), transparent 35%),
+      radial-gradient(circle at 50% 80%, rgba(255,92,138,0.10), transparent 40%);
+  }
+
+  ::selection{background:var(--lime);color:var(--navy);}
+
+  a{color:inherit;text-decoration:none;}
+
+  .container{
+    max-width:1140px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- Scroll Progress + Nav ---------- */
+  .progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg, var(--lime), var(--py-blue), var(--pink));
+    z-index:1000; transition:width .1s linear;
+  }
+
+  header{
+    position:fixed; top:0; left:0; width:100%;
+    z-index:900;
+    padding:22px 0;
+    transition:all .35s ease;
+    backdrop-filter:blur(0px);
+  }
+  header.scrolled{
+    padding:12px 0;
+    background:rgba(11,19,43,0.85);
+    backdrop-filter:blur(10px);
+    box-shadow:0 4px 30px rgba(0,0,0,0.3);
+  }
+  header .container{display:flex;align-items:center;justify-content:space-between;}
+
+  .logo{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.3rem;
+    display:flex; align-items:center; gap:8px;
+    letter-spacing:0.5px;
+  }
+  .logo .dot{color:var(--lime);}
+
+  nav ul{display:flex; gap:34px; list-style:none;}
+  nav a{
+    font-size:0.92rem;
+    font-weight:500;
+    color:var(--text-dim);
+    position:relative;
+    padding-bottom:4px;
+    transition:color .25s ease;
+  }
+  nav a::after{
+    content:'';
+    position:absolute; left:0; bottom:0;
+    width:0%; height:2px;
+    background:var(--lime);
+    transition:width .3s ease;
+  }
+  nav a:hover{color:var(--text);}
+  nav a:hover::after{width:100%;}
+
+  .nav-toggle{display:none;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; align-items:center;
+    position:relative;
+    padding-top:90px;
+    overflow:hidden;
+  }
+
+  .hero .container{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:40px;
+    align-items:center;
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    color:var(--lime);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:18px;
+    opacity:0;
+    animation:fadeUp .8s ease forwards .1s;
+  }
+  .eyebrow::before{
+    content:'';
+    width:26px; height:2px;
+    background:var(--lime);
+    display:inline-block;
+  }
+
+  .hero h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2.6rem, 6vw, 4.6rem);
+    line-height:1.02;
+    letter-spacing:-1px;
+    opacity:0;
+    animation:fadeUp .8s ease forwards .25s;
+  }
+  .hero h1 .accent{
+    background:linear-gradient(90deg, var(--lime), var(--py-blue));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .hero .role-line{
+    margin-top:22px;
+    font-family:var(--font-mono);
+    font-size:1.05rem;
+    color:var(--text-dim);
+    min-height:1.6em;
+    opacity:0;
+    animation:fadeUp .8s ease forwards .4s;
+  }
+  .role-line .cursor{
+    display:inline-block;
+    width:9px; height:1.1em;
+    background:var(--lime);
+    margin-left:4px;
+    vertical-align:middle;
+    animation:blink 1s steps(1) infinite;
+  }
+
+  .hero p.lede{
+    margin-top:20px;
+    max-width:480px;
+    color:var(--text-dim);
+    font-size:1.02rem;
+    line-height:1.65;
+    opacity:0;
+    animation:fadeUp .8s ease forwards .55s;
+  }
+
+  .hero-cta{
+    margin-top:34px;
+    display:flex; gap:16px; flex-wrap:wrap;
+    opacity:0;
+    animation:fadeUp .8s ease forwards .7s;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 26px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:0.92rem;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(90deg, var(--lime), #a9e02c);
+    color:var(--navy);
+    box-shadow:0 8px 24px rgba(198,241,53,0.25);
+  }
+  .btn-primary:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(198,241,53,0.35);}
+  .btn-ghost{
+    border-color:rgba(255,255,255,0.18);
+    color:var(--text);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,0.06); transform:translateY(-3px);}
+
+  /* ---------- Court visual with shuttlecock ---------- */
+  .court-wrap{
+    position:relative;
+    height:460px;
+    opacity:0;
+    animation:fadeUp 1s ease forwards .5s;
+  }
+  .court{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(var(--court), var(--court-dark));
+    border-radius:20px;
+    box-shadow:0 30px 60px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.05);
+    overflow:hidden;
+  }
+  .court::before{ /* outer lines */
+    content:'';
+    position:absolute; inset:24px;
+    border:2px solid rgba(255,255,255,0.55);
+  }
+  .court::after{ /* center service line */
+    content:'';
+    position:absolute; top:24px; bottom:24px; left:50%;
+    width:2px; background:rgba(255,255,255,0.55);
+  }
+  .net{
+    position:absolute; left:24px; right:24px; top:calc(50% - 1px);
+    height:14px;
+    background:repeating-linear-gradient(90deg, rgba(255,255,255,0.6) 0 2px, transparent 2px 8px);
+    transform:translateY(-50%);
+    border-top:2px solid rgba(255,255,255,0.75);
+    border-bottom:2px solid rgba(255,255,255,0.75);
+  }
+  .short-line{
+    position:absolute; left:24px; right:24px;
+    height:2px; background:rgba(255,255,255,0.4);
+  }
+  .short-line.top{top:32%;}
+  .short-line.bottom{bottom:32%;}
+
+  .shuttle{
+    position:absolute;
+    width:28px; height:28px;
+    left:20%; top:70%;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,0.4));
+    animation:rally 3.2s ease-in-out infinite;
+  }
+  .shuttle svg{width:100%; height:100%;}
+
+  .code-chip{
+    position:absolute;
+    bottom:18px; right:18px;
+    background:rgba(11,19,43,0.85);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;
+    padding:10px 14px;
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--py-yellow);
+    backdrop-filter:blur(6px);
+  }
+  .code-chip span{color:var(--text-dim);}
+
+  @keyframes rally{
+    0%{ left:18%; top:68%; transform:rotate(0deg);}
+    25%{ left:42%; top:22%; transform:rotate(140deg);}
+    50%{ left:66%; top:68%; transform:rotate(280deg);}
+    75%{ left:42%; top:22%; transform:rotate(400deg);}
+    100%{ left:18%; top:68%; transform:rotate(540deg);}
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(24px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes blink{
+    0%,49%{opacity:1;} 50%,100%{opacity:0;}
+  }
+
+  .scroll-cue{
+    position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--text-dim); font-size:0.75rem; font-family:var(--font-mono);
+    letter-spacing:2px; text-transform:uppercase;
+    animation:fadeUp 1s ease forwards 1s; opacity:0;
+  }
+  .scroll-cue .line{width:1px; height:34px; background:linear-gradient(var(--lime), transparent); animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:0.3;} 50%{opacity:1;}}
+
+  /* ---------- Section base ---------- */
+  section{
+    padding:120px 0;
+    position:relative;
+  }
+  .section-head{
+    margin-bottom:56px;
+  }
+  .section-head .tag{
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    color:var(--pink);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:12px;
+    display:block;
+  }
+  .section-head h2{
+    font-family:var(--font-display);
+    font-size:clamp(1.9rem, 3.4vw, 2.7rem);
+    font-weight:700;
+  }
+  .section-head p{
+    margin-top:14px;
+    color:var(--text-dim);
+    max-width:560px;
+    line-height:1.6;
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- Divider (dotted court line with shuttle) ---------- */
+  .divider{
+    position:relative;
+    height:60px;
+    margin:0 auto;
+    max-width:1140px;
+  }
+  .divider .track{
+    position:absolute; top:50%; left:0; right:0; height:2px;
+    background:repeating-linear-gradient(90deg, rgba(255,255,255,0.18) 0 10px, transparent 10px 20px);
+    transform:translateY(-50%);
+  }
+  .divider .bird{
+    position:absolute; top:50%; width:22px; height:22px;
+    transform:translate(-50%,-50%);
+    animation:slide 6s linear infinite;
+  }
+  @keyframes slide{
+    0%{left:0%;} 100%{left:100%;}
+  }
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:60px;
+    align-items:center;
+  }
+  .about-card{
+    background:linear-gradient(160deg, var(--navy-2), rgba(18,27,60,0.4));
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+    padding:28px;
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    line-height:1.85;
+    box-shadow:0 20px 40px rgba(0,0,0,0.3);
+  }
+  .about-card .kw{color:var(--pink);}
+  .about-card .fn{color:var(--py-blue);}
+  .about-card .str{color:var(--py-yellow);}
+  .about-card .cm{color:#5b6489;}
+
+  .about-text p{color:var(--text-dim); line-height:1.75; margin-bottom:16px; font-size:1.02rem;}
+  .about-text strong{color:var(--text);}
+
+  .stat-row{
+    display:flex; gap:34px; margin-top:30px; flex-wrap:wrap;
+  }
+  .stat{
+    text-align:left;
+  }
+  .stat .num{
+    font-family:var(--font-display);
+    font-size:2.1rem; font-weight:700;
+    background:linear-gradient(90deg, var(--lime), var(--py-blue));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .stat .lbl{font-size:0.8rem; color:var(--text-dim); margin-top:4px;}
+
+  /* ---------- Skills ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:24px;
+  }
+  .skill-card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+    padding:26px;
+    transition:transform .3s ease, border-color .3s ease, background .3s ease;
+  }
+  .skill-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(198,241,53,0.4);
+    background:rgba(255,255,255,0.05);
+  }
+  .skill-card h3{
+    font-family:var(--font-display);
+    font-size:1.15rem;
+    margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .skill-card h3 .ico{font-size:1.3rem;}
+  .skill-item{margin-bottom:14px;}
+  .skill-item:last-child{margin-bottom:0;}
+  .skill-item .top{
+    display:flex; justify-content:space-between;
+    font-size:0.85rem; color:var(--text-dim); margin-bottom:6px;
+  }
+  .bar{
+    height:7px; border-radius:99px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+  }
+  .bar .fill{
+    height:100%; width:0%;
+    border-radius:99px;
+    background:linear-gradient(90deg, var(--py-blue), var(--lime));
+    transition:width 1.4s cubic-bezier(.16,1,.3,1);
+  }
+  .skill-card.badminton .bar .fill{
+    background:linear-gradient(90deg, var(--pink), var(--py-yellow));
+  }
+
+  /* ---------- Projects ---------- */
+  .projects-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .project-card{
+    background:var(--navy-2);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+    padding:26px;
+    position:relative;
+    overflow:hidden;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .project-card::before{
+    content:'';
+    position:absolute; top:-40%; left:-20%;
+    width:160%; height:160%;
+    background:radial-gradient(circle, rgba(198,241,53,0.12), transparent 60%);
+    opacity:0; transition:opacity .4s ease;
+  }
+  .project-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 24px 48px rgba(0,0,0,0.4);
+  }
+  .project-card:hover::before{opacity:1;}
+  .project-card .num{
+    font-family:var(--font-mono);
+    font-size:0.75rem;
+    color:var(--py-blue);
+    letter-spacing:1px;
+  }
+  .project-card h3{
+    font-family:var(--font-display);
+    font-size:1.2rem;
+    margin:12px 0 10px;
+  }
+  .project-card p{color:var(--text-dim); font-size:0.92rem; line-height:1.6; margin-bottom:18px;}
+  .tag-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .pill{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    padding:4px 10px;
+    border-radius:99px;
+    background:rgba(255,255,255,0.06);
+    color:var(--text-dim);
+    border:1px solid rgba(255,255,255,0.08);
+  }
+
+  /* ---------- Badminton achievements ---------- */
+  .achv-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+  }
+  .achv-card{
+    text-align:center;
+    padding:30px 18px;
+    border-radius:var(--radius);
+    background:linear-gradient(160deg, rgba(11,79,60,0.35), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.08);
+    transition:transform .3s ease;
+  }
+  .achv-card:hover{transform:translateY(-6px) scale(1.02);}
+  .achv-card .emoji{font-size:2rem; margin-bottom:12px;}
+  .achv-card .num{
+    font-family:var(--font-display); font-weight:700; font-size:1.8rem;
+    color:var(--lime);
+  }
+  .achv-card .lbl{font-size:0.82rem; color:var(--text-dim); margin-top:6px;}
+
+  /* ---------- Contact ---------- */
+  .contact-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:50px;
+    align-items:center;
+  }
+  .contact-card{
+    background:linear-gradient(160deg, var(--navy-2), rgba(18,27,60,0.5));
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+    padding:34px;
+  }
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block; font-size:0.8rem; color:var(--text-dim); margin-bottom:8px;
+    font-family:var(--font-mono);
+  }
+  .field input, .field textarea{
+    width:100%;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:8px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:0.92rem;
+    outline:none;
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .field input:focus, .field textarea:focus{
+    border-color:var(--lime);
+    background:rgba(255,255,255,0.06);
+  }
+  .field textarea{resize:vertical; min-height:100px;}
+
+  .send-status{
+    margin-top:14px; font-size:0.85rem; color:var(--lime);
+    font-family:var(--font-mono);
+    min-height:1.2em;
+  }
+
+  .social-list{display:flex; gap:14px; margin-top:28px; flex-wrap:wrap;}
+  .social-list a{
+    width:44px; height:44px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.12);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem;
+    transition:all .25s ease;
+  }
+  .social-list a:hover{
+    background:var(--lime);
+    color:var(--navy);
+    transform:translateY(-4px);
+    border-color:var(--lime);
+  }
+
+  footer{
+    padding:36px 0;
+    text-align:center;
+    color:var(--text-dim);
+    font-size:0.85rem;
+    border-top:1px solid rgba(255,255,255,0.06);
+  }
+  footer span{color:var(--lime);}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:900px){
+    nav{display:none;}
+    .hero .container, .about-grid, .contact-wrap{grid-template-columns:1fr;}
+    .court-wrap{height:340px; order:-1;}
+    .skills-grid{grid-template-columns:1fr;}
+    .projects-grid{grid-template-columns:1fr;}
+    .achv-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:480px){
+    .container{padding:0 20px;}
+    .hero-cta{flex-direction:column; align-items:flex-start;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:0.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:0.001ms !important;
+    }
+  }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--lime);
+    outline-offset:3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<header id="siteHeader">
+  <div class="container">
+    <div class="logo">Siva<span class="dot">.</span>Murugan</div>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#badminton">Badminton</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-copy">
+      <div class="eyebrow">Portfolio / 2026</div>
+      <h1>SivaMurugan<br><span class="accent">builds &amp; rallies.</span></h1>
+      <div class="role-line" id="roleLine"><span class="cursor"></span></div>
+      <p class="lede">I write clean Python for a living and chase shuttlecocks for fun. Somewhere between <code>def</code> and drop-shots, I found a rhythm I like — precision, footwork, and a good sense of timing.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="court-wrap">
+      <div class="court">
+        <div class="short-line top"></div>
+        <div class="short-line bottom"></div>
+        <div class="net"></div>
+        <div class="shuttle">
+          <svg viewBox="0 0 64 64">
+            <g>
+              <ellipse cx="32" cy="46" rx="9" ry="9" fill="#F4F4F9"/>
+              <path d="M32 40 L14 8 L26 20 Z" fill="#F4F4F9" opacity="0.9"/>
+              <path d="M32 40 L32 4 L38 22 Z" fill="#F4F4F9" opacity="0.75"/>
+              <path d="M32 40 L50 8 L38 20 Z" fill="#F4F4F9" opacity="0.9"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="code-chip"><span>&gt;&gt;&gt;</span> player.smash(power=<span>"max"</span>)</div>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span>scroll</span><div class="line"></div></div>
+</section>
+
+<div class="divider">
+  <div class="track"></div>
+  <div class="bird">
+    <svg viewBox="0 0 64 64"><ellipse cx="32" cy="46" rx="8" ry="8" fill="#C6F135"/><path d="M32 40 L14 8 L26 20 Z" fill="#C6F135" opacity="0.85"/><path d="M32 40 L32 4 L38 22 Z" fill="#C6F135" opacity="0.7"/><path d="M32 40 L50 8 L38 20 Z" fill="#C6F135" opacity="0.85"/></svg>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="tag">Who I Am</span>
+      <h2>Two courts, one focus.</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card reveal">
+<span class="kw">class</span> <span class="fn">SivaMurugan</span>:<br>
+&nbsp;&nbsp;<span class="kw">def</span> <span class="fn">__init__</span>(self):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.role = <span class="str">"Python Developer"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.sport = <span class="str">"Badminton"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.based_in = <span class="str">"Tamil Nadu, IN"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># fueled by curiosity + rallies</span><br><br>
+&nbsp;&nbsp;<span class="kw">def</span> <span class="fn">mindset</span>(self):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">"practice, reflect, improve"</span>
+      </div>
+
+      <div class="about-text reveal">
+        <p>I'm <strong>SivaMurugan</strong>, a Python developer who treats code the way I treat a badminton rally — every move deliberate, every exchange building toward the next. I like building backends, automating the boring stuff, and shipping things that actually work.</p>
+        <p>Off-screen, I'm on the badminton court most evenings. The sport taught me patience under pressure, quick decision-making, and how to recover fast from a bad point — habits that carry straight into debugging sessions and deadlines.</p>
+
+        <div class="stat-row">
+          <div class="stat"><div class="num">3+</div><div class="lbl">Years Coding Python</div></div>
+          <div class="stat"><div class="num">15+</div><div class="lbl">Projects Shipped</div></div>
+          <div class="stat"><div class="num">5+</div><div class="lbl">Years Playing Badminton</div></div>
+          <div class="stat"><div class="num">10+</div><div class="lbl">Tournaments Played</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="tag">Toolkit</span>
+      <h2>What I bring to the table (and the court).</h2>
+      <p>A blend of technical depth and on-court instinct — both sharpened through daily practice.</p>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <h3><span class="ico">🐍</span> Development</h3>
+        <div class="skill-item">
+          <div class="top"><span>Python</span><span>95%</span></div>
+          <div class="bar"><div class="fill" data-width="95"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Django / Flask</span><span>88%</span></div>
+          <div class="bar"><div class="fill" data-width="88"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>REST APIs</span><span>90%</span></div>
+          <div class="bar"><div class="fill" data-width="90"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>SQL / Databases</span><span>82%</span></div>
+          <div class="bar"><div class="fill" data-width="82"></div></div>
+        </div>
+      </div>
+
+      <div class="skill-card reveal">
+        <h3><span class="ico">⚙️</span> Tools &amp; Data</h3>
+        <div class="skill-item">
+          <div class="top"><span>Git / GitHub</span><span>90%</span></div>
+          <div class="bar"><div class="fill" data-width="90"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Docker</span><span>75%</span></div>
+          <div class="bar"><div class="fill" data-width="75"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Pandas / NumPy</span><span>80%</span></div>
+          <div class="bar"><div class="fill" data-width="80"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Automation Scripting</span><span>92%</span></div>
+          <div class="bar"><div class="fill" data-width="92"></div></div>
+        </div>
+      </div>
+
+      <div class="skill-card badminton reveal">
+        <h3><span class="ico">🏸</span> On-Court Game</h3>
+        <div class="skill-item">
+          <div class="top"><span>Smash Power</span><span>90%</span></div>
+          <div class="bar"><div class="fill" data-width="90"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Footwork</span><span>85%</span></div>
+          <div class="bar"><div class="fill" data-width="85"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Doubles Strategy</span><span>88%</span></div>
+          <div class="bar"><div class="fill" data-width="88"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Net Play</span><span>80%</span></div>
+          <div class="bar"><div class="fill" data-width="80"></div></div>
+        </div>
+      </div>
+
+      <div class="skill-card badminton reveal">
+        <h3><span class="ico">🎯</span> Mental Game</h3>
+        <div class="skill-item">
+          <div class="top"><span>Focus Under Pressure</span><span>87%</span></div>
+          <div class="bar"><div class="fill" data-width="87"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Match Reading</span><span>83%</span></div>
+          <div class="bar"><div class="fill" data-width="83"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Stamina</span><span>85%</span></div>
+          <div class="bar"><div class="fill" data-width="85"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="top"><span>Consistency</span><span>89%</span></div>
+          <div class="bar"><div class="fill" data-width="89"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="tag">Selected Work</span>
+      <h2>Things I've built.</h2>
+      <p>A few projects that reflect how I think — practical, clean, and built to solve a real problem.</p>
+    </div>
+
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="num">01</div>
+        <h3>Match Stats Tracker</h3>
+        <p>A Python + Flask app that logs badminton match scores and auto-generates performance charts after every session.</p>
+        <div class="tag-row">
+          <span class="pill">Python</span>
+          <span class="pill">Flask</span>
+          <span class="pill">SQLite</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="num">02</div>
+        <h3>Task Automation Suite</h3>
+        <p>A collection of scripts that automate repetitive file handling, report generation, and email dispatch for small teams.</p>
+        <div class="tag-row">
+          <span class="pill">Python</span>
+          <span class="pill">Automation</span>
+          <span class="pill">APIs</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="num">03</div>
+        <h3>Tournament Bracket API</h3>
+        <p>A REST API that generates and manages single/double elimination brackets for local badminton club tournaments.</p>
+        <div class="tag-row">
+          <span class="pill">Django</span>
+          <span class="pill">REST</span>
+          <span class="pill">PostgreSQL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BADMINTON -->
+<section id="badminton">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="tag">On The Court</span>
+      <h2>Badminton, seriously.</h2>
+      <p>The discipline that keeps my reflexes — and my debugging — sharp.</p>
+    </div>
+
+    <div class="achv-grid">
+      <div class="achv-card reveal">
+        <div class="emoji">🏆</div>
+        <div class="num">4</div>
+        <div class="lbl">Club Titles Won</div>
+      </div>
+      <div class="achv-card reveal">
+        <div class="emoji">🏸</div>
+        <div class="num">10+</div>
+        <div class="lbl">Tournaments Played</div>
+      </div>
+      <div class="achv-card reveal">
+        <div class="emoji">🤝</div>
+        <div class="num">2</div>
+        <div class="lbl">State-Level Doubles</div>
+      </div>
+      <div class="achv-card reveal">
+        <div class="emoji">⏱️</div>
+        <div class="num">5+</div>
+        <div class="lbl">Years On Court</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="tag">Let's Connect</span>
+      <h2>Got a project — or a match — in mind?</h2>
+    </div>
+
+    <div class="contact-wrap">
+      <div class="about-text reveal">
+        <p>Whether it's a Python project you want to build, or a badminton game you want to challenge me to — I'm always up for it. Drop a message and I'll get back to you.</p>
+        <div class="social-list">
+          <a href="#" title="GitHub" aria-label="GitHub">GH</a>
+          <a href="#" title="LinkedIn" aria-label="LinkedIn">in</a>
+          <a href="#" title="Email" aria-label="Email">@</a>
+          <a href="#" title="Twitter" aria-label="Twitter">X</a>
+        </div>
+      </div>
+
+      <form class="contact-card reveal" id="contactForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="Your name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Say hello, or challenge me to a match..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message</button>
+        <div class="send-status" id="sendStatus"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Built with <span>Python</span> logic &amp; badminton rhythm — © 2026 SivaMurugan
+  </div>
+</footer>
+
+<script>
+  // ---- Scroll progress bar ----
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateProgress);
+
+  // ---- Header shrink on scroll ----
+  const header = document.getElementById('siteHeader');
+  document.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ---- Typing effect for role line ----
+  const roles = [
+    "Python Developer",
+    "Badminton Player",
+    "Backend Builder",
+    "Rally Strategist"
+  ];
+  const roleLine = document.getElementById('roleLine');
+  const cursorEl = roleLine.querySelector('.cursor');
+  let roleIndex = 0, charIndex = 0, deleting = false;
+
+  function typeLoop(){
+    const current = roles[roleIndex];
+    if(!deleting){
+      charIndex++;
+      if(charIndex > current.length){
+        deleting = true;
+        setTimeout(typeLoop, 1200);
+        return;
+      }
+    } else {
+      charIndex--;
+      if(charIndex < 0){
+        deleting = false;
+        roleIndex = (roleIndex + 1) % roles.length;
+        charIndex = 0;
+      }
+    }
+    roleLine.textContent = current.slice(0, charIndex);
+    roleLine.appendChild(cursorEl);
+    setTimeout(typeLoop, deleting ? 45 : 90);
+  }
+  typeLoop();
+
+  // ---- Scroll reveal ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ---- Animate skill bars when visible ----
+  const skillCards = document.querySelectorAll('.skill-card');
+  const barIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.querySelectorAll('.fill').forEach(fill => {
+          fill.style.width = fill.dataset.width + '%';
+        });
+        barIo.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  skillCards.forEach(card => barIo.observe(card));
+
+  // ---- Contact form (front-end only) ----
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('sendStatus');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    status.textContent = "Thanks! This is a demo form — connect it to your email/service to go live.";
+    form.reset();
+  });
+
+  // ---- Smooth nav close-on-click (mobile-safe no-op currently) ----
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if(id.startsWith('#')){
+        e.preventDefault();
+        document.querySelector(id)?.scrollIntoView({behavior:'smooth'});
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
